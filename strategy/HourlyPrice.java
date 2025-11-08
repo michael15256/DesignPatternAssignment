@@ -1,4 +1,4 @@
-package strategy;
+package bicyclerental.strategy;
 
 public class HourlyPrice implements TicketPriceStrategy {
     @Override
