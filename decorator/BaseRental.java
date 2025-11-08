@@ -1,4 +1,4 @@
-package bicyclerental.strategy;
+package bicyclerental.decorator;
 
 import strategy.TicketPriceStrategy;
 import java.util.Objects;
