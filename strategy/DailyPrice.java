@@ -1,4 +1,4 @@
-package strategy;
+package bicycle.strategy;
 
 public class DailyPrice implements TicketPriceStrategy {
     @Override
