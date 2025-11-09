@@ -1,4 +1,4 @@
-package bicyclerental.strategy;
+package bicyclerental.decorator;
 //가격 계산 + 설명 제공 인터페이스
 
 public interface Rental {
