@@ -1,6 +1,6 @@
 package bicyclerental.decorator;
 
-import strategy.TicketPriceStrategy;
+import bicyclerental.strategy.TicketPriceStrategy;
 import java.util.Objects;
 
 public final class BaseRental implements Rental {
