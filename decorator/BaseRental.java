@@ -1,21 +1,23 @@
-package bicyclerental.decorator; 
-import bicyclerental.strategy.TicketStrategy;
+package bicyclerental.decorator;
+
+import strategy.TicketPriceStrategy;
 import java.util.Objects;
 
-public class BaseRental implements Rental { 
-    private final TicketStrategy strategy;
+public final class BaseRental implements Rental {
+    private final TicketPriceStrategy ticketPriceStrategy; //기본 가격 가져옴
 
-    public BaseRental(TicketStrategy strategy) {
-        this.strategy = Objects.requireNonNull(strategy);
-    }
+    public BaseRental(TicketPriceStrategy ticketPriceStrategy) {
+        this.ticketPriceStrategy = Objects.requireNonNull(ticketPriceStrategy);
+    } 
 
     @Override
     public double cost() {
-        return this.strategy.getBaseCost();
+        return ticketPriceStrategy.getBaseCost();
     }
 
     @Override
     public String getDescription() {
-        return this.strategy.getTicketName();
+        return ticketPriceStrategy.getTicketName();
     }
+    
 }

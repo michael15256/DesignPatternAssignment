@@ -1,14 +1,12 @@
 package bicyclerental.strategy;
 
-public class WeeklyDiscount implements TicketStrategy {
-
+public class HourlyPrice implements TicketPriceStrategy {
     @Override
     public double getBaseCost() {
-        return 20000.0; 
+        return 1000.0;
     }
-
     @Override
     public String getTicketName() {
-        return "주간권";
+        return "시간권";
     }
 }
