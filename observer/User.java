@@ -5,13 +5,13 @@ import java.util.List;
 
 public class User implements Observer {
 
-    private String userId;
+    private int userId;
     private String name;
     
     //관심 대여소 등록
     private List<BikeRentalStation> favoriteStations;
 
-    public User(String userId, String name) {
+    public User(int userId, String name) {
         this.userId = userId;
         this.name = name;
         this.favoriteStations = new ArrayList<>();

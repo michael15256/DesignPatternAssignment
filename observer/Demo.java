@@ -7,9 +7,9 @@ public class Demo {
         BikeRentalStation Ori = new BikeRentalStation("S-002", "오리역", "분당구", 5);
         BikeRentalStation Migeum = new BikeRentalStation("S-003", "미금역", "분당구", 1);
 
-        User user1 = new User("u-kim", "김철수");
-        User user2 = new User("u-park", "박영희");
-        User user3 = new User("u-hong", "홍길동");
+        User user1 = new User(100, "김철수");
+        User user2 = new User(101, "박영희");
+        User user3 = new User(102, "홍길동");
         
         System.out.println("==============================\n");
 
