@@ -24,7 +24,7 @@ public class Purchasing {
     public Rental getRental() {return rental;}
     public TicketType getTicketType() {return ticketType;}
 
-    public double getBasePrice() {
+    public double getBasePrice() {  //데코레이터까지 적용된 원가격 가져옴(TicketPurchaseService에서 할인 가격 계산 예정)
         return rental.cost();
     }
 }
