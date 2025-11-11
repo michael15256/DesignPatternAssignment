@@ -1,4 +1,4 @@
-package bicyclerental.observer
+package bicyclerental.observer;
 
 public class Demo {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package bicyclerental.observer
+package bicyclerental.observer;
 
 import java.util.ArrayList;
 import java.util.List;

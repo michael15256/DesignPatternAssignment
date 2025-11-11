@@ -1,4 +1,4 @@
-package bicyclerental.observer
+package bicyclerental.observer;
 
 public enum StationStatus {
     ACTIVE,
