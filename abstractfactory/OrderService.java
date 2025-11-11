@@ -1,5 +1,6 @@
 package bicyclerental.abstractfactory;
 import bicyclerental.decorator.Rental;
+import bicyclerental.observer.User;
 import bicyclerental.strategy.Purchasing;
 
 /*
@@ -10,34 +11,34 @@ import bicyclerental.strategy.Purchasing;
 
 public class OrderService {
 
-  public void purchase(int userId, int ticketId, String paymentMethod, Purchasing purchasing) {
+  public void purchase(User user, int ticketId, String paymentMethod, Purchasing purchasing) {
     if (paymentMethod.equals("kakaoPay")) {
       PaymentGatewayFactory kakaoPayFactory = new KakaoPayFactory();
-      PaymentProcessor kakaoPaymentProcessor = kakaoPayFactory.createPaymentProcessor(userId, ticketId, purchasing);
+      PaymentProcessor kakaoPaymentProcessor = kakaoPayFactory.createPaymentProcessor(user, ticketId, purchasing);
       kakaoPaymentProcessor.processPayment();
     }
   }
 
-  public void cancelOrder(int userId, int ticketId, String paymentMethod, Purchasing purchasing) {
+  public void cancelOrder(User user, int ticketId, String paymentMethod, Purchasing purchasing) {
     if (paymentMethod.equals("kakaoPay")) {
       PaymentGatewayFactory kakaoPayFactory = new KakaoPayFactory();
-      CancelProcessor kakaoCancelProcessor = kakaoPayFactory.createCancelProcessor(userId, ticketId, purchasing);
+      CancelProcessor kakaoCancelProcessor = kakaoPayFactory.createCancelProcessor(user, ticketId, purchasing);
       kakaoCancelProcessor.processCancel();
     }
   }
 
-  public void refund(int userId, int ticketId, String paymentMethod, Purchasing purchasing) {
+  public void refund(User user, int ticketId, String paymentMethod, Purchasing purchasing) {
     if (paymentMethod.equals("kakaoPay")) {
       PaymentGatewayFactory kakaoPayFactory = new KakaoPayFactory();
-      RefundProcessor kakaoRefundProcessor = kakaoPayFactory.createRefundProcessor(userId, ticketId, purchasing);
+      RefundProcessor kakaoRefundProcessor = kakaoPayFactory.createRefundProcessor(user, ticketId, purchasing);
       kakaoRefundProcessor.processRefund();
     }
   }
 
-  public void registerSubscription(int userId, int ticketId, String paymentMethod, Purchasing purchasing) {
+  public void registerSubscription(User user, int ticketId, String paymentMethod, Purchasing purchasing) {
     if (paymentMethod.equals("kakaoPay")) {
       PaymentGatewayFactory kakaoPayFactory = new KakaoPayFactory();
-      SubscriptionProcessor kakaoSubscriptionProcessor = kakaoPayFactory.createSubscriptionProcessor(userId, ticketId, purchasing);
+      SubscriptionProcessor kakaoSubscriptionProcessor = kakaoPayFactory.createSubscriptionProcessor(user, ticketId, purchasing);
       kakaoSubscriptionProcessor.schedulePayment();
     }
   }

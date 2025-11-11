@@ -1,21 +1,22 @@
 package bicyclerental.abstractfactory;
 
+import bicyclerental.observer.User;
 import bicyclerental.strategy.Purchasing;
 
 public class KakaoRefund implements RefundProcessor{
-  int userId;
+  User user;
   int ticketId;
   Purchasing purchasing;
 
-  public KakaoRefund(int userId, int ticketId, Purchasing purchasing){
-    this.userId = userId;
+  public KakaoRefund(User user, int ticketId, Purchasing purchasing){
+    this.user = user;
     this.ticketId = ticketId;
     this.purchasing = purchasing;
   }
   @Override
   public void processRefund() { // 결제 완료 이후 환불
     System.out.println("=====카카오 페이 환불 창=====");
-    System.out.println("사용자 ID : "+ this.userId);
+    System.out.println("사용자(ID) : "+ this.user.toString());
     System.out.println("티켓 ID : "+ this.ticketId);
     System.out.println("티켓 타입 : "+ purchasing.getTicketType());
     System.out.println("결제 명세 : "+ purchasing.getRental().getDescription());

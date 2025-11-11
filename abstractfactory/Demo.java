@@ -15,8 +15,11 @@ import bicyclerental.observer.*;
 
 public class Demo {
   public static void main(String[] arg){
-    // 현재 유저 클래스 userId -> String 값 조율 필요 -> USER 클래스 자체를 받아오도록 수정 예정
-    
+    // 유저 생성
+    User user1 = new User(100, "김철수");
+    User user2 = new User(101, "박영희");
+    User user3 = new User(102, "홍길동");
+
     // 앱 당 하나 생성되는 orderService 객체
     OrderService orderService = new OrderService();
     // 티켓 가격 추가
@@ -31,22 +34,17 @@ public class Demo {
     Purchasing purchasingA = new Purchasing(rentalA, Purchasing.TicketType.DAILY);
     Purchasing purchasingB = new Purchasing(rentalB, Purchasing.TicketType.HOURLY);
 
-    orderService.purchase(100,100,"kakaoPay", purchasingA);
-    orderService.cancelOrder(100,100,"kakaoPay", purchasingA);
-    orderService.refund(100,100,"kakaoPay", purchasingA);
-    orderService.registerSubscription(100,100,"kakaoPay", purchasingA);
+    orderService.purchase(user1,100,"kakaoPay", purchasingA);
+    orderService.cancelOrder(user1,100,"kakaoPay", purchasingA);
+    orderService.refund(user2,100,"kakaoPay", purchasingA);
+    orderService.registerSubscription(user2,100,"kakaoPay", purchasingA);
 
-    orderService.purchase(200,200,"kakaoPay", purchasingB);
-    orderService.cancelOrder(200,200,"kakaoPay", purchasingB);
-    orderService.refund(200,200,"kakaoPay", purchasingB);
-    orderService.registerSubscription(200,200,"kakaoPay", purchasingB);
+    orderService.purchase(user3,200,"kakaoPay", purchasingB);
+    orderService.cancelOrder(user3,200,"kakaoPay", purchasingB);
+    orderService.refund(user3,200,"kakaoPay", purchasingB);
+    orderService.registerSubscription(user3,200,"kakaoPay", purchasingB);
 
     System.out.println("-------------------------------옵저버 테스트-------------------------------");
-
-    // 유저 생성
-    User user1 = new User("u-kim", "김철수");
-    User user2 = new User("u-park", "박영희");
-    User user3 = new User("u-hong", "홍길동");
 
     BikeRentalStation Jukjeon = new BikeRentalStation("S-001", "죽전역", "수지구", 10);
     BikeRentalStation Ori = new BikeRentalStation("S-002", "오리역", "분당구", 5);

@@ -1,14 +1,15 @@
 package bicyclerental.abstractfactory;
 
+import bicyclerental.observer.User;
 import bicyclerental.strategy.Purchasing;
 
 public class KakaoCancel implements CancelProcessor{
-  int userId;
+  User user;
   int ticketId;
   Purchasing purchasing;
 
-  public KakaoCancel(int userId, int ticketId, Purchasing purchasing){
-    this.userId = userId;
+  public KakaoCancel(User user, int ticketId, Purchasing purchasing){
+    this.user = user;
     this.ticketId = ticketId;
     this.purchasing = purchasing;
   }
@@ -16,7 +17,7 @@ public class KakaoCancel implements CancelProcessor{
   @Override
   public void processCancel() { // 단순 결제 취소
     System.out.println("=====카카오 페이 취소 창=====");
-    System.out.println("사용자 ID : "+ this.userId);
+    System.out.println("사용자(ID) : "+ this.user.toString());
     System.out.println("티켓 ID : "+ this.ticketId);
     System.out.println("티켓 타입 : "+ purchasing.getTicketType());
     System.out.println("결제 명세 : "+ purchasing.getRental().getDescription());
