@@ -1,4 +1,4 @@
-package bicyclerental.decorator;
+package decorator;
 import java.util.Objects;
 
 public abstract class CondimentDecorator implements Rental {
