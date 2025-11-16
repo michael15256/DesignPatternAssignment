@@ -1,7 +1,10 @@
 package bicyclerental.observer;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BikeRentalStation implements Subject {
     private List<Observer> observers;
@@ -9,7 +12,7 @@ public class BikeRentalStation implements Subject {
     private String stationId;
     private String name;
     private String location;
-    private int remainingBike;
+    private List<Bike> bikelist;
     private StationStatus stationStatus;
 
     public BikeRentalStation(String stationId, String name, String location, int initialBikes) {
@@ -17,7 +20,12 @@ public class BikeRentalStation implements Subject {
         this.stationId = stationId;
         this.name = name;
         this.location = location;
-        this.remainingBike = initialBikes;
+
+        this.bikelist = new ArrayList<>();
+        for (int i = 0; i < initialBikes; i++) {
+            this.bikelist.add(new Bike(stationId + "-" + (i + 1))); //바이크 아이디 ex) S-001-1
+        }
+
         this.updateStatus(); 
     }
 
@@ -42,47 +50,62 @@ public class BikeRentalStation implements Subject {
         }
     }
 
-    //대여소의 자체 기능
+    //대여소의 자체 기능 - 렌트
     public boolean rentBike() {
-        if (stationStatus == StationStatus.EMPTY) {
-            System.out.println(">> [" + name + "] 대여 실패 (재고 없음).");
-            return false;
-        }
-        else if(stationStatus == StationStatus.MAINTENANCE){
+
+        if(stationStatus == StationStatus.MAINTENANCE){
             System.out.println(">> [" + name + "] 대여 실패 (점검 중).");
             return false;
         }
-        
-        remainingBike--;
-        System.out.println(">> [" + name + "] 1대 대여. (현재 " + remainingBike + "대)");
-        
-        updateStatus();
-        notifyObservers();
-        return true;
-    }
 
-    public void returnBike() {
-        if (stationStatus == StationStatus.FULL) {
-            System.out.println(">> [" + name + "] 반납 실패 (가득 참).");
-            return;
+        Optional<Bike> bikeToRent = bikelist.stream().filter(Bike::isAvailable).findFirst();
+        
+        if (bikeToRent.isPresent()){
+            bikeToRent.get().rent();
+
+            System.out.println(">> [" + name + "] 자전거 " + bikeToRent.get().getBikeId() + " 대여 완료.");
+
+            updateStatus();
+            notifyObservers();
+            return true;
         }
-        else if(stationStatus == StationStatus.MAINTENANCE){
+        else{
+            System.out.println(">> [" + name + "] 대여 실패 (재고 없음).");
+            return false;
+        }
+    }
+    //반납  
+    public void returnBike() {
+            
+        if(stationStatus == StationStatus.MAINTENANCE){
             System.out.println(">> [" + name + "] 반납 실패 (점검 중).");
             return;
         }
-        remainingBike++;
-        System.out.println(">> [" + name + "] 1대 반납. (현재 " + remainingBike + "대)");
 
-        updateStatus();
-        notifyObservers();
+        Optional<Bike> bikeToReturn = bikelist.stream().filter(bike -> !bike.isAvailable()).findFirst();
+
+        if(bikeToReturn.isPresent()){
+            bikeToReturn.get().returnToStation();
+            System.out.println(">> [" + name + "] 자전거 " + bikeToReturn.get().getBikeId() + " 반납 완료.");
+
+            updateStatus();
+            notifyObservers();
+        }
+        else{
+            System.out.println(">> [" + name + "] 반납 실패 (가득 참).");
+            return;
+        }
     }
 
     // 대여소 상태를 갱신하는 내부 로직
     public void updateStatus() {
+
+        int availableBikes = this.getRemainingBike();
+
         if (this.stationStatus != StationStatus.MAINTENANCE) {
-            if (remainingBike <= 0) {
+            if (availableBikes <= 0) {
                 this.stationStatus = StationStatus.EMPTY;
-            } else if (remainingBike >= 100) { // ex(최대 100대)
+            } else if (availableBikes >= bikelist.size()) { 
                 this.stationStatus = StationStatus.FULL;
             } else {
                 this.stationStatus = StationStatus.ACTIVE;
@@ -90,10 +113,9 @@ public class BikeRentalStation implements Subject {
         }
     }
 
-    // 옵저버가 데이터를 PULL 할 수 있도록 설정
 
     public int getRemainingBike() {
-        return this.remainingBike;
+        return (int) bikelist.stream().filter(Bike::isAvailable).count();
     }
 
     public String getName() {
