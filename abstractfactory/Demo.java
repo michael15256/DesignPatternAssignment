@@ -9,6 +9,7 @@ import bicyclerental.strategy.Purchasing;
 import bicyclerental.strategy.TicketPriceStrategy;
 */
 
+import bicyclerental.bicyclerental.strategy.HourlyPrice;
 import bicyclerental.decorator.*;
 import bicyclerental.strategy.*;
 import bicyclerental.observer.*;
@@ -23,8 +24,8 @@ public class Demo {
     // 앱 당 하나 생성되는 orderService 객체
     OrderService orderService = new OrderService();
     // 티켓 가격 추가
-    TicketPriceStrategy ticketPriceStrategyA = new DailyPrice();
-    TicketPriceStrategy ticketPriceStrategyB = new HourlyPrice();
+    bicyclerental.bicyclerental.strategy.TicketPriceStrategy ticketPriceStrategyA = new bicyclerental.bicyclerental.strategy.DailyPrice();
+    bicyclerental.bicyclerental.strategy.TicketPriceStrategy ticketPriceStrategyB = new HourlyPrice();
 
     // 대여 항목 추가
     Rental rentalA = new BaseRental(ticketPriceStrategyA);

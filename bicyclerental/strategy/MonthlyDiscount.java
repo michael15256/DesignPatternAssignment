@@ -1,4 +1,4 @@
-package bicyclerental.strategy;
+package bicyclerental.bicyclerental.strategy;
 
 public class MonthlyDiscount implements DiscountStrategy {
 
