@@ -1,2 +1,0 @@
-패키지 추가
-package bicyclerental.decorator
