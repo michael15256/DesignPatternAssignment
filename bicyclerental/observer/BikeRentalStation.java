@@ -29,7 +29,7 @@ public class BikeRentalStation implements Subject {
         this.updateStatus(); 
     }
 
-    //Subject 인터페이스
+    //Subject
     @Override
     public void attach(Observer observer) {
         System.out.println(">> [" + name + "]에 " + observer + " 구독");
@@ -50,7 +50,7 @@ public class BikeRentalStation implements Subject {
         }
     }
 
-    //대여소의 자체 기능 - 렌트
+    //렌트
     public boolean rentBike() {
 
         if(stationStatus == StationStatus.MAINTENANCE){
@@ -97,7 +97,6 @@ public class BikeRentalStation implements Subject {
         }
     }
 
-    // 대여소 상태를 갱신하는 내부 로직
     public void updateStatus() {
 
         int availableBikes = this.getRemainingBike();
@@ -122,21 +121,19 @@ public class BikeRentalStation implements Subject {
         int currentSize = bikelist.size();
         
         if (count > currentSize) {
-            //새 자전거 추가
             int diff = count - currentSize;
             for (int i = 0; i < diff; i++) {
                 String newId = stationId + "-" + (currentSize + i + 1);
                 bikelist.add(new Bike(newId));
             }
         } else if (count < currentSize) {
-            // 줄이기: 뒤에서부터 제거 (단, 대여중인거 말고 대여 가능한거 우선 제거하면 좋겠지만 여기선 단순 제거)
             int diff = currentSize - count;
             for (int i = 0; i < diff; i++) {
                 bikelist.remove(bikelist.size() - 1);
             }
         }
         
-        updateStatus(); // 수량 변경에 따른 상태 업데이트
+        updateStatus();
         notifyObservers();
     }
 

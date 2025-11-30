@@ -3,13 +3,16 @@ package bicyclerental.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+import bicyclerental.strategy.TicketPurchasing;
+
 public class User implements Observer {
 
     private int userId;
     private String name;
     
-    //관심 대여소 등록
     private List<BikeRentalStation> favoriteStations;
+
+    private TicketPurchasing activeTicket = null;
 
     public User(int userId, String name) {
         this.userId = userId;
@@ -17,7 +20,7 @@ public class User implements Observer {
         this.favoriteStations = new ArrayList<>();
     }
 
-    // Observer 인터페이스
+    // Observer
 
     @Override
     public void update(BikeRentalStation station) {
@@ -26,32 +29,40 @@ public class User implements Observer {
         StationStatus status = station.getStationStatus();
 
         System.out.println(
-            "--- [" + this.name + "님] 즐겨찾기 알림 --- \n" +
+            "====== [" + this.name + "님] 즐겨찾기 알림 ====== \n" +
             "    " + stationName + "의 상태: " + status + "\n" +
             "    " + "현재 잔여 자전거: " + remainingBike + "대\n" +
-            "-------------------------------------"
+            "====================================="
         );
+        if (remainingBike == 2) {
+            System.out.println("=====================================");
+            System.out.println(stationName + " 자전거 2대 남음 !");
+            System.out.println("=====================================");
+        }
     }
 
-    // 유저가 대여소를 구독
+    // 구독
     public void addFavorite(BikeRentalStation station) {
         this.favoriteStations.add(station);
         station.attach(this);
     }
 
-    // 유저가 구독 취소
+    // 구독 취소
     public void removeFavorite(BikeRentalStation station) {
         this.favoriteStations.remove(station);
         station.detach(this);
     }
     
-    // 유저가 대여소에서 자전거를 빌리는 행위
-    public void rentBikeFrom(BikeRentalStation station) {
-        System.out.println(this.name + "님이 " + station.getName() + "에서 대여");
-        station.rentBike();
-    }
+    // 대여
+    public boolean rentBikeFrom(BikeRentalStation station) {
+    System.out.println(this.name + "님이 " + station.getName() + "에 대여");
+    
+    boolean isSuccess = station.rentBike(); 
+    
+    return isSuccess; 
+}
 
-    // 유저가 대여소에 자전거를 반납하는 행위
+    // 반납
     public void returnBikeTo(BikeRentalStation station) {
         System.out.println(this.name + "님이 " + station.getName() + "에 반납");
         station.returnBike();
@@ -62,13 +73,26 @@ public class User implements Observer {
         return this.name + "(" + this.userId + ")"; 
     }
 
+    public void activateTicket(TicketPurchasing ticket) {
+        this.activeTicket = ticket;
+        System.out.println("[알림] " + ticket.getTicketName() + " 사용이 시작되었습니다.");
+    }
+
+    public boolean hasActiveTicket() {
+        return activeTicket != null;
+    }
+
     public int getId() {
-        return userId; 
+        return userId;
     }
     public String getName() {
-        return name; 
+        return name;
     }
     public List<BikeRentalStation> getMyFavorites() {
         return favoriteStations;
+    }
+
+    public TicketPurchasing getActiveTicket() {
+        return activeTicket;
     }
 }
