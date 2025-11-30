@@ -47,18 +47,28 @@ public class User implements Observer {
     
     // 유저가 대여소에서 자전거를 빌리는 행위
     public void rentBikeFrom(BikeRentalStation station) {
-        System.out.println(this.name + "님이 " + station.getName() + "에서 대여 시도");
+        System.out.println(this.name + "님이 " + station.getName() + "에서 대여");
         station.rentBike();
     }
 
     // 유저가 대여소에 자전거를 반납하는 행위
     public void returnBikeTo(BikeRentalStation station) {
-        System.out.println(this.name + "님이 " + station.getName() + "에 반납 시도");
+        System.out.println(this.name + "님이 " + station.getName() + "에 반납");
         station.returnBike();
     }
     
     @Override
     public String toString() {
         return this.name + "(" + this.userId + ")"; 
+    }
+
+    public int getId() {
+        return userId; 
+    }
+    public String getName() {
+        return name; 
+    }
+    public List<BikeRentalStation> getMyFavorites() {
+        return favoriteStations;
     }
 }
