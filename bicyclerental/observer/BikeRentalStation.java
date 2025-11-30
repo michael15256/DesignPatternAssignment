@@ -113,6 +113,33 @@ public class BikeRentalStation implements Subject {
         }
     }
 
+    public void setStationStatus(StationStatus status) {
+        this.stationStatus = status;
+        notifyObservers();
+    }
+
+    public void setRemainingBike(int count){
+        int currentSize = bikelist.size();
+        
+        if (count > currentSize) {
+            //새 자전거 추가
+            int diff = count - currentSize;
+            for (int i = 0; i < diff; i++) {
+                String newId = stationId + "-" + (currentSize + i + 1);
+                bikelist.add(new Bike(newId));
+            }
+        } else if (count < currentSize) {
+            // 줄이기: 뒤에서부터 제거 (단, 대여중인거 말고 대여 가능한거 우선 제거하면 좋겠지만 여기선 단순 제거)
+            int diff = currentSize - count;
+            for (int i = 0; i < diff; i++) {
+                bikelist.remove(bikelist.size() - 1);
+            }
+        }
+        
+        updateStatus(); // 수량 변경에 따른 상태 업데이트
+        notifyObservers();
+    }
+
 
     public int getRemainingBike() {
         return (int) bikelist.stream().filter(Bike::isAvailable).count();
@@ -124,5 +151,9 @@ public class BikeRentalStation implements Subject {
     
     public StationStatus getStationStatus() {
         return this.stationStatus;
+    }
+
+    public String getLocation(){
+        return this.location;
     }
 }
