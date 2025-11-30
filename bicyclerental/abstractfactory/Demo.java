@@ -1,107 +1,168 @@
 package bicyclerental.abstractfactory;
 
-/*
-import bicyclerental.decorator.BaseRental;
-import bicyclerental.decorator.Rental;
-import bicyclerental.strategy.DailyPrice;
-import bicyclerental.strategy.HourlyPrice;
-import bicyclerental.strategy.Purchasing;
-import bicyclerental.strategy.TicketPriceStrategy;
-*/
-
-import bicyclerental.strategy.HourlyPrice;
-import bicyclerental.decorator.*;
 import bicyclerental.strategy.*;
 import bicyclerental.observer.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Demo {
-  public static void main(String[] arg){
-    // 유저 생성
-    User user1 = new User(100, "김철수");
-    User user2 = new User(101, "박영희");
-    User user3 = new User(102, "홍길동");
+  private static Map<Integer, User> userDatabase = new HashMap<>();
+  private static Map<Integer, List<TicketPurchasing>> userTickets = new HashMap<>();
 
-    // 앱 당 하나 생성되는 orderService 객체
+  public static void main(String[] arg) {
+    User preRegisteredUser = new User(32224772, "choijiwoo");
+    userDatabase.put(32224772, preRegisteredUser);
+
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.println("==================== 로그인 ====================");
+    System.out.print("사용자 ID를 입력하세요: ");
+    int userId = scanner.nextInt();
+    scanner.nextLine();
+
+    System.out.print("사용자 이름을 입력하세요: ");
+    String userName = scanner.nextLine();
+
+    User currentUser = userDatabase.get(userId);
+    if (currentUser == null) {
+      System.out.println("\n[알림] 등록된 사용자가 없습니다.");
+      System.out.print("회원가입을 진행하시겠습니까? (y/n): ");
+      String signupChoice = scanner.nextLine().trim().toLowerCase();
+
+      if (signupChoice.equals("y") || signupChoice.equals("yes")) {
+        currentUser = new User(userId, userName);
+        userDatabase.put(userId, currentUser);
+        System.out.println("회원가입이 완료되었습니다: " + currentUser);
+      } else {
+        System.out.println("회원가입이 취소되었습니다. 프로그램을 종료합니다.");
+        scanner.close();
+        return;
+      }
+    } else {
+      System.out.println("\n[로그인 성공] 기존 회원입니다: " + currentUser);
+    }
+
     OrderService orderService = OrderService.INSTANCE;
 
-    // 티켓 가격 추가
-    TicketPriceStrategy dailyPriceStrategy = new DailyPrice();
-    DiscountStrategy dailyDiscountStrategy = new DailyDiscount();
+    boolean running = true;
+    while (running) {
+      System.out.println("\n==================== 메뉴 선택 ====================");
+      System.out.println("1. 티켓 구매");
+      System.out.println("2. 이용권 사용");
+      System.out.println("3. 종료");
 
-    // 티켓 구매 항목
-    TicketPurchasing dailyTicketPurchasing = new TicketPurchasing(dailyPriceStrategy,dailyDiscountStrategy);
+      int menuChoice = scanner.nextInt();
+      scanner.nextLine();
 
-    // 대여 항목 추가
+      if (menuChoice == 2) {
+        List<TicketPurchasing> ownedTickets = userTickets.getOrDefault(userId, new ArrayList<>());
 
+        if (ownedTickets.isEmpty()) {
+          System.out.println("\n[알림] 보유한 이용권이 없습니다.");
+          System.out.print("티켓을 구매하시겠습니까? (y/n): ");
+          String purchaseChoice = scanner.nextLine().trim().toLowerCase();
 
-    // 티켓 구매
-    System.out.println("-------------------------------티켓 구매 결제 과정-------------------------------");
-    orderService.purchase(user1,100,"kakaoPay", dailyTicketPurchasing);
-    orderService.cancelOrder(user1,100,"kakaoPay", dailyTicketPurchasing);
-    orderService.refund(user2,100,"kakaoPay", dailyTicketPurchasing);
-    orderService.registerSubscription(user2,100,"kakaoPay", dailyTicketPurchasing);
+          if (purchaseChoice.equals("y") || purchaseChoice.equals("yes")) {
+            menuChoice = 1;
+          } else {
+            System.out.println("이용권 사용이 취소되었습니다.");
+            continue;
+          }
+        } else {
+          System.out.println("\n==================== 보유 이용권 ====================");
+          for (int i = 0; i < ownedTickets.size(); i++) {
+            TicketPurchasing ticket = ownedTickets.get(i);
+            System.out.println((i + 1) + ". " + ticket.getTicketName());
+          }
+          System.out.println("\n이용권을 사용합니다.");
+          continue;
+        }
+      }
 
-    // 렌탈 용품 구매
-    System.out.println("-------------------------------렌탈 용품 결제 과정-------------------------------");
-    RentalPurchaseService service = new RentalPurchaseService(orderService);
+      if (menuChoice == 1) {
+        System.out.println("\n==================== 티켓 선택 ====================");
+        System.out.println("1. 시간권 (1,000원)");
+        System.out.println("2. 일일권 (5,000원)");
+        System.out.println("3. 주간권 (20,000원)");
+        System.out.println("4. 월간권 (60,000원)");
+        System.out.print("구매할 티켓을 선택하세요 (1-4): ");
 
-    System.out.println("----- 헬멧, 바구니, 무릎 보호대 선택 -----");
+        int ticketChoice = scanner.nextInt();
+        scanner.nextLine();
 
-    List<RentalOption> myOptions = Arrays.asList(
-      RentalOption.HELMET,
-      RentalOption.BASKET,
-      RentalOption.KNEEPAD
-    );
+        TicketPriceStrategy priceStrategy;
+        DiscountStrategy discountStrategy;
+        String ticketName;
 
-    service.rentBike(user1, true, myOptions);
+        switch (ticketChoice) {
+          case 1:
+            priceStrategy = new HourlyPrice();
+            discountStrategy = new StandardDiscount();
+            ticketName = "시간권";
+            break;
+          case 2:
+            priceStrategy = new DailyPrice();
+            discountStrategy = new DailyDiscount();
+            ticketName = "일일권";
+            break;
+          case 3:
+            priceStrategy = new WeeklyPrice();
+            discountStrategy = new WeeklyDiscount();
+            ticketName = "주간권";
+            break;
+          case 4:
+            priceStrategy = new MonthlyPrice();
+            discountStrategy = new MonthlyDiscount();
+            ticketName = "월간권";
+            break;
+          default:
+            System.out.println("\n[구매 실패] 잘못된 티켓 선택입니다. 구매가 취소되었습니다.");
+            continue; // 메뉴로 돌아가기
+        }
 
-    System.out.println("\n----- 옵션 없이 대여 -----");
+        TicketPurchasing ticketPurchasing = new TicketPurchasing(priceStrategy, discountStrategy);
+        System.out.println("\n선택한 티켓: " + ticketName);
+        System.out.println("최종 가격: " + ticketPurchasing.calculateFinalPrice() + "원");
 
-    service.rentBike(user2, true, List.of());
+        System.out.println("\n==================== 결제수단 선택 ====================");
+        System.out.println("1. 카카오페이 (kakaoPay)");
+        System.out.print("결제수단을 선택하세요 (1): ");
 
-    System.out.println("-------------------------------옵저버 테스트-------------------------------");
+        int paymentChoice = scanner.nextInt();
+        scanner.nextLine();
 
-    BikeRentalStation Jukjeon = new BikeRentalStation("S-001", "죽전역", "수지구", 10);
-    BikeRentalStation Ori = new BikeRentalStation("S-002", "오리역", "분당구", 5);
-    BikeRentalStation Migeum = new BikeRentalStation("S-003", "미금역", "분당구", 1);
+        String paymentMethod;
+        switch (paymentChoice) {
+          case 1:
+            paymentMethod = "kakaoPay";
+            break;
+          default:
+            System.out.println("잘못된 선택입니다.");
+            continue; // 메뉴로 돌아가기
+        }
 
-    System.out.println("==============================\n");
+        System.out.println("선택한 결제수단: " + paymentMethod);
 
-    // 유저가 대여소를 구독
-    user1.addFavorite(Jukjeon);
-    user2.addFavorite(Jukjeon);
-    user2.addFavorite(Ori);
-    user3.addFavorite(Migeum);
+        System.out.println("\n==================== 티켓 구매 결제 과정 ====================");
+        int ticketId = 100;
+        orderService.purchase(currentUser, ticketId, paymentMethod, ticketPurchasing);
 
-    System.out.println("\n==============================\n");
+        userTickets.putIfAbsent(userId, new ArrayList<>());
+        userTickets.get(userId).add(ticketPurchasing);
+        System.out.println("\n[알림] " + ticketName + "이(가) 보유 티켓에 추가되었습니다.");
+      } else if (menuChoice == 3) {
+        System.out.println("\n프로그램을 종료합니다.");
+        running = false;
+      } else {
+        System.out.println("\n[오류] 잘못된 메뉴 선택입니다.");
+      }
+    }
 
-    // 김철수가 죽전역에서 자전거를 빌림
-    System.out.println("\n*** 1. 김철수가 죽전역에서 대여 ***");
-    user1.rentBikeFrom(Jukjeon);
+    scanner.close();
 
-    System.out.println("\n==============================\n");
-
-    // 박영희가 오리역에 반납
-    System.out.println("\n*** 2. 박영희가 오리역에 반납 ***");
-    user2.returnBikeTo(Ori);
-
-    System.out.println("\n==============================\n");
-
-    // 홍길동이 미금역에 대여
-    System.out.println("\n*** 8. 홍길동이 미금역에서 대여 ***");
-    user3.rentBikeFrom(Migeum);
-
-    System.out.println("\n==============================\n");
-
-    System.out.println("\n*** 9. 홍길동이 미금역(0대)에서 추가 대여 시도 ***");
-    user3.rentBikeFrom(Migeum);
-
-    System.out.println("\n==============================\n");
-
-    System.out.println("\n*** 10. 홍길동이 미금역에 반납 ***");
-    user3.returnBikeTo(Migeum);
   }
 }
