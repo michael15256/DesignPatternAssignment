@@ -1,5 +1,6 @@
-package bicyclerental.abstractfactory;
+package bicyclerental.test;
 
+import bicyclerental.abstractfactory.OrderService;
 import bicyclerental.strategy.*;
 import bicyclerental.observer.*;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Demo {
+public class Demo1 {
   private static Map<Integer, User> userDatabase = new HashMap<>();
   private static Map<Integer, List<TicketPurchasing>> userTickets = new HashMap<>();
 

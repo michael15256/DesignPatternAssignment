@@ -1,4 +1,4 @@
-package bicyclerental;
+package bicyclerental.test;
 
 import bicyclerental.abstractfactory.OrderService;
 import bicyclerental.decorator.*;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class BicycleRentalSystem {
+public class Demo2 {
 
     //DB
     private static List<BikeRentalStation> stations = new ArrayList<>();
